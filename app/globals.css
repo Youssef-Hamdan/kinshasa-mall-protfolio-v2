@@ -1,26 +1,313 @@
 @import "tailwindcss";
 
+/* next-themes uses `class="dark"` on <html>; map `dark:` utilities to that (not only system prefs). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Primary type: Adobe Fonts kit knn2tsv — TT Commons Pro (linked in app/layout.tsx) */
+
+/*
+ * Kinshasa Mall — teal / ivory / charcoal system (next-themes: default dark).
+ * Core km-* aliases mirror the design tokens; semantic vars feed Tailwind @theme.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+
+  --km-primary: #29bcb7;
+  --km-primary-hover: #22a7a2;
+  --km-bg: #0f1111;
+  --km-surface: #171a1a;
+  --km-card: #1e2222;
+  --km-border: #2a2f2f;
+  --km-text: #fcfcee;
+  --km-text-secondary: #d9d9cf;
+  --km-text-muted: #9ea19b;
+  --km-primary-soft: rgba(41, 188, 183, 0.16);
+  --km-neutral-dark: #333333;
+  --km-highlight-line: #3e4444;
+
+  /* Background */
+  --background: var(--km-bg);
+  --muted: var(--km-surface);
+  --card: var(--km-card);
+
+  /* Text */
+  --foreground: var(--km-text);
+  --foreground-secondary: var(--km-text-secondary);
+  --muted-foreground: var(--km-text-muted);
+  --card-foreground: var(--km-text);
+
+  /* Brand — teal #29BCB7 */
+  --brand-teal: var(--km-primary);
+  --primary: var(--km-primary);
+  --primary-foreground: var(--km-bg);
+
+  --olive: var(--km-highlight-line);
+  --olive-secondary: var(--km-neutral-dark);
+
+  /* Accent — aligned to primary teal */
+  --accent: var(--km-primary);
+  --accent-soft: var(--km-primary-soft);
+  --accent-foreground: var(--km-text);
+
+  /* Borders / UI */
+  --border: var(--km-border);
+  --border-strong: var(--km-highlight-line);
+  --ring: var(--km-primary);
+
+  /* Gradients */
+  --gradient-hero: linear-gradient(135deg, #0f1111 0%, #171a1a 45%, #1e2222 100%);
+  --gradient-teal: linear-gradient(135deg, #29bcb7 0%, #1fa39e 100%);
+  --gradient-promo: linear-gradient(135deg, #29bcb7 0%, #22a7a2 100%);
+
+  --hero-bg: var(--background);
+
+  /*
+   * Photography / dark scrims — fixed to dark-theme neutrals + ivory text
+   * (same hex as --km-bg / --km-text in dark; kept separate for “on photo” usage).
+   */
+  --photo-scrim: #0f1111;
+  --photo-text: #fcfcee;
+  --photo-text-secondary: #d9d9cf;
+}
+
+html.light {
+  color-scheme: light;
+
+  /* Primary brand teal — darker shade for strong contrast on light backgrounds */
+  --km-primary: #0f726e;
+  --km-primary-hover: #0c5e5b;
+  --km-bg: #fcfcee;
+  --km-surface: #ffffff;
+  --km-card: #f4f4ea;
+  --km-border: #d9d9cc;
+  --km-text: #333333;
+  --km-text-secondary: #555555;
+  --km-text-muted: #787878;
+  --km-primary-soft: rgba(15, 114, 110, 0.12);
+  --km-neutral-dark: #444444;
+
+  --background: var(--km-bg);
+  --muted: var(--km-surface);
+  --card: var(--km-card);
+
+  --foreground: var(--km-text);
+  --foreground-secondary: var(--km-text-secondary);
+  --muted-foreground: var(--km-text-muted);
+  --card-foreground: var(--km-text);
+
+  --brand-teal: var(--km-primary);
+  --primary: var(--km-primary);
+  --primary-foreground: var(--km-bg);
+
+  --olive: var(--km-neutral-dark);
+  --olive-secondary: var(--km-text-secondary);
+
+  --accent: var(--km-primary);
+  --accent-soft: var(--km-primary-soft);
+  --accent-foreground: var(--km-text);
+
+  --border: var(--km-border);
+  --border-strong: color-mix(in srgb, var(--km-border) 55%, var(--km-text) 45%);
+  --ring: var(--km-primary);
+
+  --gradient-hero: linear-gradient(135deg, #fcfcee 0%, #f4f4ea 100%);
+  --gradient-teal: linear-gradient(135deg, #0f726e 0%, #0c5e5b 100%);
+  --gradient-promo: linear-gradient(135deg, #0f726e 0%, #0c5e5b 100%);
+
+  --hero-bg: var(--km-bg);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-foreground-secondary: var(--foreground-secondary);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-brand-teal: var(--brand-teal);
+  --color-olive: var(--olive);
+  --color-olive-secondary: var(--olive-secondary);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-hero-bg: var(--hero-bg);
+  --color-photo-text: var(--photo-text);
+  --color-photo-text-secondary: var(--photo-text-secondary);
+  --font-sans: "tt-commons-pro", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Promo / hero gradient utilities */
+.bg-gradient-kinshasa-hero {
+  background-image: var(--gradient-hero);
+}
+
+.bg-gradient-kinshasa-teal {
+  background-image: var(--gradient-teal);
+}
+
+.bg-gradient-kinshasa-promo {
+  background-image: var(--gradient-promo);
+}
+
+/* Offset for fixed header when using hash / in-page links */
+[id] {
+  scroll-margin-top: 6rem;
+}
+
+/* Darken photography with palette charcoal (--photo-scrim) */
+.bg-photo-scrim-55 {
+  background-color: color-mix(in srgb, var(--photo-scrim) 55%, transparent);
+}
+
+.bg-gradient-photo-scrim-t {
+  background-image: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--photo-scrim) 80%, transparent),
+    color-mix(in srgb, var(--photo-scrim) 50%, transparent),
+    color-mix(in srgb, var(--photo-scrim) 40%, transparent)
+  );
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/*
+ * Split section titles (e.g. “Our / Stores”) — horizontal left→right gradients on text.
+ */
+.text-heading-lead {
+  background-image: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--foreground) 78%, black) 0%,
+    var(--foreground) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-heading-accent {
+  background-image: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--primary) 88%, black) 0%,
+    color-mix(in srgb, var(--primary) 35%, white) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Infinite horizontal / vertical marquee (used by components/ui/marquee) */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap, 1rem)));
+  }
+}
+
+@keyframes marquee-reverse {
+  from {
+    transform: translateX(calc(-100% - var(--gap, 1rem)));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap, 1rem)));
+  }
+}
+
+@keyframes marquee-vertical-reverse {
+  from {
+    transform: translateY(calc(-100% - var(--gap, 1rem)));
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.marquee-track {
+  animation: marquee var(--duration, 40s) linear infinite;
+}
+
+.marquee-track-reverse {
+  animation: marquee-reverse var(--duration, 40s) linear infinite;
+}
+
+.marquee-track-vertical {
+  animation: marquee-vertical var(--duration, 40s) linear infinite;
+}
+
+.marquee-track-vertical-reverse {
+  animation: marquee-vertical-reverse var(--duration, 40s) linear infinite;
+}
+
+/* Mall landing: hero / static text entrance (stagger via inline animation-delay) */
+@keyframes mall-text-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.mall-text-animate {
+  animation: mall-text-fade-up 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mall-text-animate {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Hero: subtle Ken Burns zoom (PremiumHero-style) */
+.hero-kenburns {
+  transform: scale(1);
+}
+
+@media (min-width: 768px) {
+  .hero-kenburns {
+    transform: scale(1.05);
+    animation: hero-subtle-zoom 30s infinite alternate ease-in-out;
+  }
+}
+
+@keyframes hero-subtle-zoom {
+  0% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-kenburns {
+    animation: none !important;
+    transform: scale(1) !important;
+  }
 }
