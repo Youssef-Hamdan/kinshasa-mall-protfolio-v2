@@ -23,16 +23,16 @@ export function MallFooter() {
               <Image
                 src="/images/logo2.webp"
                 alt=""
-                width={200}
-                height={52}
-                className="h-12 w-auto shrink-0 sm:h-14 md:h-16 dark:hidden"
+                width={400}
+                height={104}
+                className="h-20 w-auto shrink-0 sm:h-24 md:h-28 dark:hidden"
               />
               <Image
                 src="/images/logo1.webp"
                 alt=""
-                width={200}
-                height={52}
-                className="hidden h-12 w-auto shrink-0 sm:h-14 md:h-16 dark:block"
+                width={400}
+                height={104}
+                className="hidden h-20 w-auto shrink-0 sm:h-24 md:h-28 dark:block"
               />
               <TextAnimation
                 as="span"

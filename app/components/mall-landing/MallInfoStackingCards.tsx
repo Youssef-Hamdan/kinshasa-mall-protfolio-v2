@@ -291,7 +291,7 @@ export function MallInfoStackingCards() {
                     <Clock className="size-4 shrink-0" strokeWidth={1.5} aria-hidden />
                     <p className="text-xs font-medium tracking-[0.2em] uppercase">Opening hours</p>
                   </div>
-                  <p className="text-foreground mt-1 text-lg font-semibold md:text-xl">9:00 – 23:00</p>
+                  <p className="text-foreground mt-1 text-lg font-semibold md:text-xl">8:00 – 23:00</p>
                   <p className="text-muted-foreground max-w-2xl text-sm">
                     We&apos;re open daily from 9:00 to 23:00. Holiday hours may vary — check with our info
                     desk for updates.
