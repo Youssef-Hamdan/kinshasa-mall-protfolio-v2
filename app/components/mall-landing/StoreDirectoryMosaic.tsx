@@ -11,6 +11,7 @@ import {
   sectionTitleLeadWordClass,
 } from "./section-heading";
 import { TextReveal } from "./TextReveal";
+import { MobileAutoScroll } from "./MobileAutoScroll";
 
 function ShopTile({ name, image, className }: { name: string; image: string; className?: string }) {
   return (
@@ -70,28 +71,45 @@ export function StoreDirectoryMosaic() {
                 />
               </div>
             ) : null}
-            <Marquee
+            <div className="hidden md:block">
+              <Marquee
+                reverse={rowIdx % 2 === 1}
+                pauseOnHover
+                className={cn(
+                  "[--gap:2rem] md:[--gap:2.5rem]",
+                  rowIdx === 1 ? "[--duration:48s]" : "[--duration:42s]",
+                )}
+              >
+                {row.tiles.map((tile, idx) => (
+                  <ShopTile key={`${tile.name}-${rowIdx}-${idx}`} name={tile.name} image={tile.image} />
+                ))}
+              </Marquee>
+            </div>
+            <MobileAutoScroll
+              speed={1.5}
               reverse={rowIdx % 2 === 1}
-              pauseOnHover
-              className={cn(
-                "[--gap:2rem] md:[--gap:2.5rem]",
-                rowIdx === 1 ? "[--duration:48s]" : "[--duration:42s]",
-              )}
+              className="gap-4 px-4 pb-4 md:hidden"
             >
-              {row.tiles.map((tile, idx) => (
-                <ShopTile key={`${tile.name}-${rowIdx}-${idx}`} name={tile.name} image={tile.image} />
+              {Array.from({ length: 4 }).map((_, repeatIdx) => (
+                <div key={`repeat-${repeatIdx}`} className="flex gap-4 shrink-0">
+                  {row.tiles.map((tile, idx) => (
+                    <div key={`mobile-${tile.name}-${rowIdx}-${idx}`} className="shrink-0">
+                      <ShopTile name={tile.name} image={tile.image} />
+                    </div>
+                  ))}
+                </div>
               ))}
-            </Marquee>
+            </MobileAutoScroll>
           </div>
         ))}
       </div>
 
       <div
-        className="from-background pointer-events-none absolute inset-y-0 left-0 z-[1] w-1/4 bg-gradient-to-r to-transparent"
+        className="from-background pointer-events-none absolute inset-y-0 left-0 z-[1] hidden w-1/4 bg-gradient-to-r to-transparent md:block"
         aria-hidden
       />
       <div
-        className="from-background pointer-events-none absolute inset-y-0 right-0 z-[1] w-1/4 bg-gradient-to-l to-transparent"
+        className="from-background pointer-events-none absolute inset-y-0 right-0 z-[1] hidden w-1/4 bg-gradient-to-l to-transparent md:block"
         aria-hidden
       />
     </section>

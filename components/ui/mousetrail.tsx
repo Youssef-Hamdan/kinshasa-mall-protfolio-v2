@@ -78,6 +78,10 @@ export default function ImageMouseTrail({
   return (
     <section
       onMouseMove={(e) => handleOnMove(e)}
+      onTouchStart={(e) => {
+        const t = e.touches[0];
+        if (t) handleOnMove(t);
+      }}
       onTouchMove={(e) => {
         const t = e.touches[0];
         if (t) handleOnMove(t);

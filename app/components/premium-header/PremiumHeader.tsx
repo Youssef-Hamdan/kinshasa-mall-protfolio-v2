@@ -194,10 +194,9 @@ export default function PremiumHeader() {
           <ModeToggle />
         </div>
 
-        {/* Mobile: language + theme (right), same circular controls as desktop */}
+        {/* Mobile: language (right), same circular controls as desktop */}
         <div className="relative z-[60] flex items-center gap-2 md:hidden">
           <LanguageToggle />
-          <ModeToggle />
         </div>
 
         {/* Mobile Menu */}

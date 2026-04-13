@@ -168,9 +168,9 @@ function HighlightsCarouselInner() {
       fastDuration={300}
       duration={4000}
       activeSlider={HIGHLIGHT_ITEMS[0].sliderName}
-      className="flex h-full min-h-0 flex-col sm:flex-row"
+      className="flex h-full min-h-0 flex-col-reverse sm:flex-row"
     >
-      <SliderBtnGroup className="border-border/50 absolute right-0 bottom-0 left-0 z-10 grid h-fit w-full grid-cols-2 overflow-hidden border-t bg-white/85 backdrop-blur-md sm:relative sm:flex sm:h-full sm:w-96 sm:shrink-0 sm:flex-col sm:border-t-0 sm:border-r sm:bg-white/55 sm:backdrop-blur-none dark:bg-muted/40 dark:sm:bg-muted/40">
+      <SliderBtnGroup className="border-border/50 z-10 grid h-fit w-full grid-cols-2 overflow-hidden border-t sm:flex sm:h-full sm:w-96 sm:shrink-0 sm:flex-col sm:border-t-0 sm:border-r sm:bg-white/55 dark:sm:bg-muted/40">
         {HIGHLIGHT_ITEMS.map((item) => (
           <SliderBtn
             key={item.sliderName}

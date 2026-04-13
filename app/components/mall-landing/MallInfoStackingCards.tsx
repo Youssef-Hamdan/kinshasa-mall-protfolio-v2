@@ -182,7 +182,7 @@ function StackCard({
   return (
     <div
       ref={stickyRef}
-      className="sticky top-0 flex h-screen w-full items-center justify-center px-3 sm:px-4"
+      className="sticky top-0 flex h-[100svh] w-full items-center justify-center px-3 sm:px-4"
     >
       <motion.div
         style={{
@@ -191,7 +191,7 @@ function StackCard({
         }}
         className={cn(
           "border-border bg-[#fcfcee] text-card-foreground shadow-xl dark:bg-card",
-          "relative -top-[15%] flex h-[min(560px,85svh)] w-full max-w-[60rem] origin-top flex-col overflow-hidden rounded-2xl border",
+          "relative -top-[15%] flex h-[min(650px,85svh)] md:h-[min(560px,85svh)] w-full max-w-[60rem] origin-top flex-col overflow-hidden rounded-2xl border",
           "md:rounded-3xl",
           className,
         )}
@@ -205,7 +205,7 @@ function StackCard({
         >
           <div
             className={cn(
-              "flex min-h-0 flex-col lg:overflow-y-auto",
+              "flex min-h-0 flex-col overflow-y-auto",
               hideImage ? "w-full" : "lg:w-[min(44%,28rem)] lg:shrink-0",
             )}
           >
@@ -249,16 +249,25 @@ export function MallInfoStackingCards() {
     offset: ["start start", "end end"],
   });
 
+  const { scrollYProgress: fadeProgress } = useScroll({
+    target: container,
+    offset: ["end end", "end start"],
+  });
+
+  const opacity = useTransform(fadeProgress, [0, 0.5], [1, 0]);
+  const scale = useTransform(fadeProgress, [0, 1], [1, 0.95]);
+
   return (
-    <section
+    <motion.section
+      style={{ opacity, scale }}
       id="explore"
       ref={container}
-      className="bg-background relative scroll-mt-24 text-foreground md:scroll-mt-28"
+      className="bg-background relative scroll-mt-24 text-foreground md:scroll-mt-28 origin-top"
     >
       <div className="mx-auto flex max-w-7xl flex-col items-start px-4 sm:px-6 lg:flex-row lg:px-8">
         
         {/* Sticky Header Column */}
-        <div className="relative top-0 z-10 flex w-full flex-col pt-20 pb-8 lg:sticky lg:h-screen lg:w-1/3 lg:justify-center lg:py-0 lg:pr-10 xl:w-[30%]">
+        <div className="relative top-0 z-10 flex w-full flex-col pt-20 pb-8 lg:sticky lg:h-[100svh] lg:w-1/3 lg:justify-center lg:py-0 lg:pr-10 xl:w-[30%]">
           <SectionHeading
             title={
               <>
@@ -334,6 +343,6 @@ export function MallInfoStackingCards() {
       })}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
