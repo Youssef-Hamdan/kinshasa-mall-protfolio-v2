@@ -285,7 +285,7 @@ export function MallInfoStackingCards() {
         <div className="relative w-full lg:w-2/3 xl:w-[70%]">
 
       {STAT_CARDS.map((row, idx) => {
-        const i = idx + 1;
+        const i = idx ;
         const imageLeft = i % 2 === 0;
         return (
           <StackCard
@@ -295,6 +295,11 @@ export function MallInfoStackingCards() {
             imageSrc={row.imageSrc}
             imageAlt={row.imageAlt}
             imageLeft={imageLeft}
+            // Dynamically apply rotation based on index
+            className={cn(
+              i === 1 && "rotate-6",
+              i === 3 && "-rotate-6"
+            )}
           >
             <StatCardBody row={row} />
           </StackCard>

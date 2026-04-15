@@ -116,8 +116,8 @@ export function HighlightsGallery() {
   return (
     <section
       id="highlights"
-      data-scroll-theme-light="theme-cream"
-      data-scroll-theme-dark="theme-charcoal"
+      data-scroll-theme-light="theme-deep-teal"
+      data-scroll-theme-dark="theme-deep-teal"
       className="scroll-mt-24 overflow-x-clip pb-10 sm:pb-24 md:scroll-mt-28"
     >
       <div className={cn(sectionHeaderContainerClass, "pt-16")}>

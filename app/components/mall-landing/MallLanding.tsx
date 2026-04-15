@@ -10,6 +10,7 @@ import { OffersPromotionsSection } from "./OffersPromotionsSection";
 import { StoreDirectoryMosaic } from "./StoreDirectoryMosaic";
 import { HeroAmenitiesBridge } from "./HomeHeroBridge";
 import { ScrollThemeController } from "./ScrollThemeController";
+import { MallStatsSection } from "./MallStatsSection";
 
 export function MallLanding() {
   return (
@@ -21,6 +22,7 @@ export function MallLanding() {
       
       <InfoHoursSection />
       <MallInfoStackingCards />
+      <MallStatsSection />
       {/* <MidPageBanner /> */}
       
       <HighlightsGallery />
