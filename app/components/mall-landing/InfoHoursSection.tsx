@@ -53,8 +53,12 @@ export function InfoHoursSection() {
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: i * 0.15, duration: 0.8, ease: [0.215, 0.61, 0.355, 1] }
-    })
+      transition: {
+        delay: i * 0.15,
+        duration: 0.8,
+        ease: [0.215, 0.61, 0.355, 1] as const,
+      },
+    }),
   };
 
   return (
@@ -157,22 +161,32 @@ export function InfoHoursSection() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             variants={cardVariants}
-            className="h-56 relative overflow-hidden rounded-[2.5rem] border border-border group/map shadow-xl"
+            className="h-56 relative overflow-hidden rounded-[2.5rem] border border-border group/map shadow-xl cursor-pointer"
+            // Click handler to open the external map
+            onClick={() => {
+              const mapUrl = `https://www.google.com/maps/search/?api=1&query=${MALL_LOCATION.lat},${MALL_LOCATION.lng}`;
+              window.open(mapUrl, "_blank", "noopener,noreferrer");
+            }}
           >
-             <GoogleMapEmbed
-                fill
-                title={MALL_LOCATION.title}
-                lat={MALL_LOCATION.lat}
-                lng={MALL_LOCATION.lng}
-              />
-              <div className="absolute inset-0 bg-black/20 group-hover/map:bg-transparent transition-colors duration-700" />
-              <motion.button 
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="absolute bottom-5 right-5 bg-white text-black text-xs font-black py-3 px-6 rounded-full shadow-2xl flex items-center gap-2 uppercase tracking-widest"
-              >
-                Get Directions <ArrowUpRight size={16} />
-              </motion.button>
+            <GoogleMapEmbed
+              fill
+              title={MALL_LOCATION.title}
+              lat={MALL_LOCATION.lat}
+              lng={MALL_LOCATION.lng}
+            />
+            
+            {/* Overlay Scrim */}
+            <div className="absolute inset-0 bg-black/20 group-hover/map:bg-transparent transition-colors duration-700 pointer-events-none" />
+
+            {/* Directions Button */}
+            <motion.button 
+              type="button"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="absolute bottom-5 right-5 bg-white text-black text-xs font-black py-3 px-6 rounded-full shadow-2xl flex items-center gap-2 uppercase tracking-widest z-20"
+            >
+              Get Directions <ArrowUpRight size={16} />
+            </motion.button>
           </motion.div>
         </div>
       </div>

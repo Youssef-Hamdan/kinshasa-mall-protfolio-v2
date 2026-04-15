@@ -1,8 +1,8 @@
 /** Mall listing map / “Open in Maps” links (adjust to the real pin). */
 export const MALL_LOCATION = {
   title: "Kinshasa Mall",
-  lat: -4.321705607519349,
-  lng: 15.228536109968468,
+  lat: -4.315525,
+  lng: 15.291648,
 } as const;
 
 /**

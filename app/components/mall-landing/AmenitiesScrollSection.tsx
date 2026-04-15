@@ -60,7 +60,7 @@ function AmenityTextGroup({
   align,
   eyebrow,
 }: {
-  items: typeof AMENITIES;
+  items: readonly (typeof AMENITIES)[number][];
   align: LineVariant;
   eyebrow: string;
 }) {
