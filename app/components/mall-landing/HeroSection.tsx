@@ -1,12 +1,15 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { useTheme } from "next-themes";
-import { useEffect, useState, useRef } from "react";
+import { useRef } from "react";
 import { useLanguage } from "../premium-header/language-provider";
-import TrustMarquee from "./TrustMarquee";
 import { IMG } from "./constants";
 
 import gsap from "gsap";
@@ -19,48 +22,35 @@ gsap.registerPlugin(ScrollTrigger);
 export function HeroSection() {
   const { t } = useLanguage();
   const reduceMotion = useReducedMotion();
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
   const container = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const { scrollY } = useScroll();
 
-  const isLight = mounted && resolvedTheme === "light";
+  const heroFade = useTransform(scrollY, [0, 350, 750], [1, 0.75, 0]);
+  const heroY = useTransform(scrollY, [0, 750], ["0px", "-80px"]);
+
   const heroSrc = IMG.heroDay;
-  const heroImgClass = isLight
-    ? "object-cover opacity-75 saturate-[0.8]"
-    : "object-cover opacity-40";
 
   useGSAP(
     () => {
       if (reduceMotion) return;
 
-      // 1. Split the text
-      const titleSplit = new SplitType("[data-hero='title']", { types: "chars" });
+      const titleSplit = new SplitType("[data-hero='title']", {
+        types: "chars",
+      });
 
-      // 2. Set Initial States
       if (titleSplit.chars) {
         gsap.set(titleSplit.chars, { yPercent: 100 });
+
+        gsap.to(titleSplit.chars, {
+          yPercent: 0,
+          duration: 1.5,
+          stagger: 0.05,
+          ease: "power3.out",
+          delay: 0.1,
+        });
       }
 
-      // 3. Main Timeline
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-
-      if (titleSplit.chars) {
-        tl.to(
-          titleSplit.chars,
-          {
-            yPercent: 0,
-            duration: 0.6,
-            stagger: 0.015,
-          },
-          0.1
-        );
-      }
-
-      // 4. Scroll Parallax
       gsap.to("[data-hero='img']", {
         yPercent: 30,
         scale: 1.1,
@@ -77,35 +67,27 @@ export function HeroSection() {
         titleSplit.revert();
       };
     },
-    { scope: container, dependencies: [reduceMotion, t] }
+    { scope: container, dependencies: [reduceMotion] }
   );
 
   const scrollPastHero = () => {
-    const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-    window.scrollTo({ top: Math.min(window.innerHeight, maxScroll), behavior: "smooth" });
+    window.scrollTo({
+      top: window.innerHeight,
+      behavior: "smooth",
+    });
   };
-
-  const fullTitle = `${t.hero.titleLine1} ${t.hero.titleAccent}`;
-  const words = fullTitle.split(" ");
-  const lastWord = words.pop();
-  
-  const titleLines = [];
-  for (let i = 0; i < words.length; i += 3) {
-    titleLines.push(words.slice(i, i + 3).join(" "));
-  }
-  
-  if (lastWord) {
-    titleLines.push(lastWord);
-  }
 
   return (
     <section
       id="home"
       ref={container}
-      className="bg-hero-bg relative flex max-lg:overflow-x-clip min-h-[100svh] w-full scroll-mt-24 flex-col overflow-hidden md:scroll-mt-28"
+      className="bg-hero-bg relative flex min-h-[100svh] w-full scroll-mt-24 flex-col overflow-hidden max-lg:overflow-x-clip md:scroll-mt-28"
     >
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        <div className="hero-kenburns absolute inset-0 origin-center overflow-hidden">
+      <motion.div
+        style={{ opacity: heroFade, y: heroY }}
+        className="absolute inset-0 z-0 overflow-hidden"
+      >
+        <div className="hero-kenburns absolute inset-0 z-[1] origin-center overflow-hidden">
           <Image
             data-hero="img"
             key={heroSrc}
@@ -114,67 +96,70 @@ export function HeroSection() {
             fill
             priority
             sizes="100vw"
-            className={heroImgClass}
+            className="object-cover opacity-100"
           />
         </div>
-        <div
-          className="pointer-events-none absolute inset-0 z-[1] hidden opacity-[0.06] mix-blend-overlay md:dark:block"
-          style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          }}
-          aria-hidden
-        />
-        {/* Dark only: tone gradient — light mode uses photo + vignette only */}
-        <div className="absolute inset-0 z-[2] hidden bg-gradient-to-b from-hero-bg/50 via-hero-bg/20 to-hero-bg dark:block" />
-        {/* Light only: strong white edge vignette */}
-        <div
-          className="pointer-events-none absolute inset-0 z-[3] dark:hidden"
-          style={{
-            background:
-              "radial-gradient(ellipse 84% 76% at 50% 32%, transparent 10%, rgb(252 252 238 / 0.3) 52%, rgb(252 252 238 / 0.6) 100%)",
-          }}
-          aria-hidden
-        />
-      </div>
 
-      <div className="relative z-10 container mx-auto flex flex-1 flex-col items-start justify-center px-4 pt-20 pb-8 text-left sm:px-6 sm:pt-24 md:pt-28">
-        <div className="overflow-hidden">
+        <div
+          className="pointer-events-none absolute inset-0 z-[2] bg-background"
+          style={{
+            opacity: 0.98,
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, transparent 48%, black 100%)",
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, transparent 48%, black 100%)",
+          }}
+        />
+      </motion.div>
+
+      <motion.div
+        style={{ opacity: heroFade }}
+        className="relative z-10 container mx-auto mt-auto px-4 pb-8 text-left sm:px-6 sm:pb-10 md:pb-12 lg:pb-14"
+      >
+        <div className="w-full overflow-hidden">
           <h1
             data-hero="title"
-            className="text-foreground max-w-6xl text-[clamp(2.25rem,9vw,3.75rem)] leading-[0.92] font-medium tracking-tighter sm:mb-6 sm:text-6xl sm:leading-[0.9] md:text-8xl lg:text-9xl flex flex-col"
+            className="text-foreground flex flex-col text-[clamp(3.2rem,10vw,12rem)] font-black uppercase leading-[0.78] tracking-[-0.06em]"
           >
-            {titleLines.map((line, idx) => (
-              <span key={idx} className={idx === titleLines.length - 1 ? "text-primary font-light italic block" : "block"}>
-                {line}
-              </span>
-            ))}
+            <span className="whitespace-nowrap">Plus qu’un Mall</span>
+            <span className="text-primary mt-4 whitespace-nowrap pl-[0.08em] text-[0.72em] font-light italic tracking-[-0.04em]">
+              Une Expérience
+            </span>
           </h1>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="relative z-10 mt-auto flex w-full flex-col items-center">
+      <motion.div
+        style={{ opacity: heroFade }}
+        className="relative z-10 flex w-full flex-col items-center"
+      >
         <motion.div
           initial={{ opacity: reduceMotion ? 1 : 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: reduceMotion ? 0 : 1.1, duration: reduceMotion ? 0 : 0.8 }}
+          transition={{
+            delay: reduceMotion ? 0 : 1.1,
+            duration: reduceMotion ? 0 : 0.8,
+          }}
           className="flex flex-col items-center gap-2 pb-4"
         >
           <button
             type="button"
             onClick={scrollPastHero}
-            className="text-primary hover:text-foreground group flex flex-col items-center gap-1 transition-colors"
+            className="group flex flex-col items-center gap-1 text-primary transition-colors hover:text-foreground"
             aria-label={t.hero.scrollHint}
           >
-            <span className="text-[10px] font-medium tracking-[0.28em] uppercase">{t.hero.scrollHint}</span>
+            <span className="text-[10px] font-medium uppercase tracking-[0.28em]">
+              {t.hero.scrollHint}
+            </span>
+
             <ChevronDown
-              className="motion-safe:animate-bounce h-5 w-5 opacity-90 group-hover:opacity-100"
+              className="h-5 w-5 opacity-90 group-hover:opacity-100 motion-safe:animate-bounce"
               strokeWidth={1.25}
               aria-hidden
             />
           </button>
         </motion.div>
-        <TrustMarquee embedded />
-      </div>
+      </motion.div>
     </section>
   );
 }

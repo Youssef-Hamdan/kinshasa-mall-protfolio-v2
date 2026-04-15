@@ -114,7 +114,12 @@ export function HighlightsGallery() {
   const borderRadiusPx = useTransform(t, (p) => 24 * (1 - p));
 
   return (
-    <section id="highlights" className="scroll-mt-24 overflow-x-clip pb-10 sm:pb-24 md:scroll-mt-28">
+    <section
+      id="highlights"
+      data-scroll-theme-light="theme-cream"
+      data-scroll-theme-dark="theme-charcoal"
+      className="scroll-mt-24 overflow-x-clip pb-10 sm:pb-24 md:scroll-mt-28"
+    >
       <div className={cn(sectionHeaderContainerClass, "pt-16")}>
         <SectionHeading
           title={

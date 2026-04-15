@@ -42,8 +42,8 @@ const translations: Record<Locale, Translations> = {
       ],
     },
     hero: {
-      titleLine1: "Welcome to the best",
-      titleAccent: "shopping destination",
+      titleLine1: "More than a",
+      titleAccent: "mall",
       description:
         "Curated retail, dining, and experiences in a light-filled space designed for the whole community — right here in Kinshasa.",
       scrollHint: "Explore",

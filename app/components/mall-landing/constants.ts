@@ -11,7 +11,7 @@ export const MALL_LOCATION = {
  */
 export const IMG = {
   /** Hero background — day photo used in light and dark themes (HeroSection, MidPageBanner). */
-  heroDay: "/images/hero-day.webp",
+  heroDay: "/images/hero-night.webp",
   heroNight: "/images/hero-night.webp",
   /** @deprecated Use `heroDay` for on-page heroes */
   hero: "/images/hero-day.webp",

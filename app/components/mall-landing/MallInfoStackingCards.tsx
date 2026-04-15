@@ -283,47 +283,6 @@ export function MallInfoStackingCards() {
 
         {/* Cards Column */}
         <div className="relative w-full lg:w-2/3 xl:w-[70%]">
-          <StackCard i={0} progress={scrollYProgress} hideImage>
-            <div className="flex h-full min-h-0 flex-col justify-between gap-6 p-6 md:p-8 lg:p-10">
-              <div className="border-border/50 flex flex-col gap-3 rounded-xl border bg-white/55 p-4 md:p-5 dark:bg-muted/40">
-                <div className="flex flex-col gap-1">
-                  <div className="text-primary flex items-center gap-2">
-                    <Clock className="size-4 shrink-0" strokeWidth={1.5} aria-hidden />
-                    <p className="text-xs font-medium tracking-[0.2em] uppercase">Opening hours</p>
-                  </div>
-                  <p className="text-foreground mt-1 text-lg font-semibold md:text-xl">8:00 – 23:00</p>
-                  <p className="text-muted-foreground max-w-2xl text-sm">
-                    We&apos;re open daily from 9:00 to 23:00. Holiday hours may vary — check with our info
-                    desk for updates.
-                  </p>
-                </div>
-              </div>
-
-              <div className="border-border/50 mt-auto flex min-h-0 flex-1 flex-col gap-3 rounded-xl border bg-white/55 p-4 md:p-5 dark:bg-muted/40">
-                <div className="flex flex-col gap-1">
-                  <div className="text-primary flex items-center gap-2">
-                    <MapPin className="size-4 shrink-0" strokeWidth={1.5} aria-hidden />
-                    <p className="text-xs font-medium tracking-[0.2em] uppercase">Location</p>
-                  </div>
-                  <p className="text-foreground mt-1 text-lg font-semibold md:text-xl">
-                    123 Avenue du Commerce
-                  </p>
-                  <p className="text-muted-foreground text-sm">
-                    Kinshasa, Democratic Republic of the Congo
-                  </p>
-                </div>
-                <GoogleMapEmbed title={MALL_LOCATION.title} lat={MALL_LOCATION.lat} lng={MALL_LOCATION.lng} />
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${MALL_LOCATION.lat},${MALL_LOCATION.lng}`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:text-primary/90 text-xs font-medium underline-offset-4 transition-colors hover:underline"
-                >
-                  Open location in Google Maps
-                </a>
-              </div>
-            </div>
-          </StackCard>
 
       {STAT_CARDS.map((row, idx) => {
         const i = idx + 1;
