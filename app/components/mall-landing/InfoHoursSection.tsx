@@ -51,7 +51,7 @@ export function InfoHoursSection() {
       transition: {
         delay: i * 0.15,
         duration: 0.6,
-        ease: [0.33, 1, 0.68, 1],
+        ease: [0.33, 1, 0.68, 1] as const,
       },
     }),
   };
