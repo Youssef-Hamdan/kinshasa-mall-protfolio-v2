@@ -5,13 +5,11 @@ import { HeroSection } from "./HeroSection";
 import { HighlightsGallery } from "./HighlightsGallery";
 import { InfoHoursSection } from "./InfoHoursSection";
 import { MallFooter } from "./MallFooter";
-import { MidPageBanner } from "./MidPageBanner";
-import { OffersPromotionsSection } from "./OffersPromotionsSection";
 import { StoreDirectoryMosaic } from "./StoreDirectoryMosaic";
 import { HeroAmenitiesBridge } from "./HomeHeroBridge";
 import { ScrollThemeController } from "./ScrollThemeController";
 import { MallStatsSection } from "./MallStatsSection";
-
+import { StackedImageReveal } from "./StackedImageReveal";
 export function MallLanding() {
   return (
     <div className="bg-background text-foreground">
@@ -24,10 +22,10 @@ export function MallLanding() {
       <MallInfoStackingCards />
       <MallStatsSection />
       {/* <MidPageBanner /> */}
-      
       <HighlightsGallery />
+      <StackedImageReveal />
       {/* <OffersPromotionsSection /> */}
-      <StoreDirectoryMosaic />
+      {/* <StoreDirectoryMosaic /> */}
       <AboutCommunitySection />
       <MallFooter />
     </div>

@@ -1,37 +1,17 @@
 "use client";
 
-/**
- * Stacking cards scroll pattern (Olivier Larose–style scroll-linked scale).
- */
-
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { motion, useScroll, useTransform, useInView, type MotionValue } from "motion/react";
-import { Clock, UtensilsCrossed, Store, Dumbbell, Sparkles, MapPin, type LucideIcon } from "lucide-react";
+import { motion, useScroll, useTransform, useInView, type MotionValue } from "framer-motion";
+import { UtensilsCrossed, Store, Dumbbell, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { GoogleMapEmbed } from "./GoogleMapEmbed";
-import { IMG, MALL_LOCATION } from "./constants";
-import {
-  SectionHeading,
-  sectionTitleAccentWordClass,
-  sectionTitleLeadWordClass,
-} from "./section-heading";
-import { BlurRevealTitle } from "@/components/ui/text-animation";
+import { IMG } from "./constants";
 
-/** Opening hours + four “by the numbers” cards */
-const CARD_COUNT = 5;
+const CARD_COUNT = 4;
 
-const STAT_CARDS: {
-  label: string;
-  value: number;
-  suffix: string;
-  icon: LucideIcon;
-  imageSrc: string;
-  imageAlt: string;
-  blurb: string;
-  /** Sample tenants open / represented (shown on the card) */
-  examples: string[];
-}[] = [
+/** * Mapping cards to your specific Kinshasa Mall accent variables 
+ */
+const STAT_CARDS = [
   {
     label: "Restaurants",
     value: 10,
@@ -39,8 +19,11 @@ const STAT_CARDS: {
     icon: UtensilsCrossed,
     imageSrc: IMG.gallery2,
     imageAlt: "Dining at Kinshasa Mall",
-    blurb: "Discover a world of flavors right here at Kinshasa Mall. From quick, casual bites on the go to elegant sit-down meals with friends and family, our diverse selection of restaurants, cafes, and food court options caters to every craving and occasion.",
+    blurb: "Discover a world of flavors. From quick, casual bites on the go to elegant sit-down meals, our diverse selection of restaurants caters to every craving.",
     examples: ["Smokin", "Nice Cream", "Rest Post", "Meat Way"],
+    // Neo-Brutalist Palette Mapping
+    accentColor: "var(--neo-accent-1)", // Acid Green
+    rotation: "-rotate-2",
   },
   {
     label: "Shops",
@@ -49,8 +32,10 @@ const STAT_CARDS: {
     icon: Store,
     imageSrc: IMG.shopping,
     imageAlt: "Shopping at Kinshasa Mall",
-    blurb: "Explore an expansive mix of local and international retail brands. Whether you're looking for the latest fashion trends, tech gadgets, daily essentials, or the perfect gift, our diverse directory of stores brings everything you need together under one roof.",
-    examples: ["CFC", "Al Jawad", "Meat Way", "Rest Post", "Kinshasa Mall"],
+    blurb: "Explore an expansive mix of retail brands. Whether you're looking for fashion, tech, or daily essentials, our diverse directory brings everything together.",
+    examples: ["CFC", "Al Jawad", "Meat Way", "Rest Post"],
+    accentColor: "var(--neo-accent-2)", // Cyber Yellow
+    rotation: "rotate-2",
   },
   {
     label: "Sports center",
@@ -59,8 +44,10 @@ const STAT_CARDS: {
     icon: Dumbbell,
     imageSrc: IMG.building,
     imageAlt: "Sports and fitness at Kinshasa Mall",
-    blurb: "Keep your fitness goals on track with our premium, fully-equipped sporting facilities. Featuring an expansive main arena, dedicated fitness studios, and indoor courts, it's the perfect environment to train, play, and stay active without ever leaving the mall.",
+    blurb: "Keep your fitness goals on track. Featuring an expansive main arena, dedicated fitness studios, and indoor courts to train, play, and stay active.",
     examples: ["Main arena", "Fitness studio", "Indoor courts"],
+    accentColor: "var(--neo-accent-3)", // Cyan
+    rotation: "-rotate-1",
   },
   {
     label: "Entertainment",
@@ -69,71 +56,69 @@ const STAT_CARDS: {
     icon: Sparkles,
     imageSrc: IMG.gallery3,
     imageAlt: "Entertainment at Kinshasa Mall",
-    blurb: "Step into a world of fun and excitement for all ages. With a modern cinema complex showing the latest blockbusters and dynamic family arcades filled with games, our entertainment wing is the ultimate destination to unwind and create lasting memories.",
+    blurb: "A world of fun for all ages. With a modern cinema complex and dynamic family arcades, our entertainment wing is the ultimate destination to unwind.",
     examples: ["Cinema complex", "Family arcade"],
+    accentColor: "var(--neo-accent-4)", // Red/Pink
+    rotation: "rotate-2",
   },
 ];
 
 function useCountUp(target: number, durationMs: number, active: boolean) {
   const [n, setN] = useState(0);
-
   useEffect(() => {
-    if (!active) {
-      setN(0);
-      return;
-    }
-    setN(0);
+    if (!active) { setN(0); return; }
     let raf = 0;
-    let cancelled = false;
     const t0 = performance.now();
     const tick = (now: number) => {
-      if (cancelled) return;
       const t = Math.min((now - t0) / durationMs, 1);
-      const eased = 1 - (1 - t) ** 3;
+      const eased = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
       setN(Math.round(eased * target));
       if (t < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
-
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(raf);
-    };
+    return () => cancelAnimationFrame(raf);
   }, [target, durationMs, active]);
-
   return n;
 }
 
 function StatCardBody({ row }: { row: (typeof STAT_CARDS)[number] }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { amount: 0.4, once: false });
-  const n = useCountUp(row.value, 1200, inView);
+  const n = useCountUp(row.value, 800, inView);
   const Icon = row.icon;
 
   return (
-    <div ref={ref} className="flex h-full flex-col justify-between p-6 md:p-8 lg:p-10">
-      <div className="flex flex-col gap-3 md:gap-4">
-        <div className="text-primary flex items-center gap-2">
-          <Icon className="size-6 shrink-0 md:size-7" strokeWidth={1.5} aria-hidden />
-          <span className="text-sm font-semibold tracking-wide uppercase">{row.label}</span>
+    <div ref={ref} className="flex h-full flex-col justify-between bg-card p-6 md:p-10 transition-colors duration-700">
+      <div className="flex flex-col gap-6">
+        <div className="flex items-center gap-4 border-b-[6px] border-[var(--neo-border)] pb-6">
+          <div 
+            className="border-4 border-[var(--neo-border)] p-3 shadow-[4px_4px_0px_0px_var(--neo-shadow)] transition-all"
+            style={{ backgroundColor: row.accentColor }}
+          >
+            <Icon className="size-8 text-black" strokeWidth={3} />
+          </div>
+          <span className="text-2xl font-black uppercase tracking-tighter text-foreground">{row.label}</span>
         </div>
-        <BlurRevealTitle
-          as="h2"
-          className="text-3xl font-semibold tracking-tight md:text-4xl lg:text-5xl xl:text-6xl"
-        >
-          {n}
-          {row.suffix}
-        </BlurRevealTitle>
-        <p className="text-muted-foreground max-w-md text-sm leading-relaxed md:text-base">{row.blurb}</p>
+        
+        <h2 className="mt-4 text-7xl font-black tracking-tighter text-foreground md:text-8xl lg:text-9xl leading-none">
+          {n}<span className="text-5xl md:text-6xl text-[var(--neo-accent-1)]">{row.suffix}</span>
+        </h2>
+        
+        <p className="text-foreground font-bold text-base leading-tight md:text-lg border-l-[6px] border-[var(--neo-border)] pl-6 mt-4 italic">
+          {row.blurb}
+        </p>
       </div>
 
-      <div className="border-border/50 mt-6 rounded-xl border bg-white/55 p-4 md:mt-auto md:p-5 dark:bg-muted/40">
-        <p className="text-primary text-xs font-medium tracking-[0.2em] uppercase">Open now — spotlight</p>
-        <ul className="mt-3 flex flex-wrap gap-2" aria-label={`Examples of ${row.label.toLowerCase()}`}>
+      <div className="mt-10 border-t-[6px] border-[var(--neo-border)] pt-8">
+        <p className="text-foreground-secondary text-xs font-black tracking-[0.3em] uppercase mb-6 flex items-center gap-2">
+          <span className="size-2 bg-[var(--neo-accent-1)] animate-pulse" /> Available Now
+        </p>
+        <ul className="flex flex-wrap gap-4">
           {row.examples.map((name) => (
             <li
               key={name}
-              className="border-border/60 rounded-full border bg-white/90 px-3 py-1.5 text-xs font-medium text-foreground md:text-sm dark:bg-background/70"
+              style={{ boxShadow: `4px 4px 0px 0px var(--neo-shadow)` }}
+              className="border-4 border-[var(--neo-border)] bg-background px-4 py-2 text-xs font-black uppercase transition-all hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0px_0px_var(--neo-shadow)] md:text-sm text-foreground"
             >
               {name}
             </li>
@@ -144,19 +129,6 @@ function StatCardBody({ row }: { row: (typeof STAT_CARDS)[number] }) {
   );
 }
 
-interface StackCardProps {
-  i: number;
-  progress: MotionValue<number>;
-  children: React.ReactNode;
-  className?: string;
-  imageLeft?: boolean;
-  priority?: boolean;
-  /** No side image — content fills the card (e.g. hours + location only). */
-  hideImage?: boolean;
-  imageSrc?: string;
-  imageAlt?: string;
-}
-
 function StackCard({
   i,
   progress,
@@ -165,75 +137,45 @@ function StackCard({
   children,
   className,
   imageLeft,
-  priority = false,
-  hideImage = false,
-}: StackCardProps) {
-  const stickyRef = useRef<HTMLDivElement>(null);
-  const targetScale = 1 - (CARD_COUNT - i) * 0.05;
+  accentColor,
+}: StackCardProps & { accentColor: string }) {
+  const targetScale = 1 - (CARD_COUNT - i) * 0.04;
   const range: [number, number] = [i * 0.25, 1];
   const scale = useTransform(progress, range, [1, targetScale]);
 
-  const { scrollYProgress: cardScrollProgress } = useScroll({
-    target: stickyRef,
-    offset: ["start end", "start start"],
-  });
-  const imageScale = useTransform(cardScrollProgress, [0, 1], [2, 1]);
-
   return (
-    <div
-      ref={stickyRef}
-      className="sticky top-0 flex h-[100svh] w-full items-center justify-center px-3 sm:px-4"
-    >
+    <div className="sticky top-0 flex h-[100svh] w-full items-center justify-center px-4">
       <motion.div
-        style={{
-          scale,
-          top: `calc(-5vh + ${i * 25}px)`,
-        }}
+        style={{ scale, top: `calc(-2vh + ${i * 35}px)` }}
         className={cn(
-          "border-border bg-[#fcfcee] text-card-foreground shadow-xl dark:bg-card",
-          "relative -top-[15%] flex h-[min(650px,85svh)] md:h-[min(560px,85svh)] w-full max-w-[60rem] origin-top flex-col overflow-hidden rounded-2xl border",
-          "md:rounded-3xl",
+          "relative flex h-[min(750px,80svh)] w-full max-w-[72rem] origin-top flex-col overflow-hidden",
+          "border-[6px] border-[var(--neo-border)] bg-background shadow-[24px_24px_0px_0px_var(--neo-shadow)]",
           className,
         )}
       >
-        <div
-          className={cn(
-            "flex min-h-0 flex-1 flex-col",
-            !hideImage && "lg:flex-row",
-            !hideImage && imageLeft && "lg:flex-row-reverse",
-          )}
-        >
-          <div
-            className={cn(
-              "flex min-h-0 flex-col overflow-y-auto",
-              hideImage ? "w-full" : "lg:w-[min(44%,28rem)] lg:shrink-0",
-            )}
-          >
+        <div className={cn("flex min-h-0 flex-1 flex-col lg:flex-row", imageLeft && "lg:flex-row-reverse")}>
+          <div className="flex min-h-0 flex-col overflow-y-auto lg:w-[45%] lg:shrink-0">
             {children}
           </div>
 
-          {!hideImage && imageSrc && (
-            <div className="relative min-h-[220px] flex-1 overflow-hidden sm:min-h-[280px] lg:min-h-0">
-              <motion.div style={{ scale: imageScale }} className="absolute inset-0 h-full w-full">
-                <Image
-                  src={imageSrc}
-                  alt={imageAlt ?? ""}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 96vw, 45vw"
-                  priority={priority}
-                />
-              </motion.div>
-              <div
-                className={cn(
-                  "pointer-events-none absolute inset-0",
-                  "max-lg:bg-gradient-to-b max-lg:from-[#fcfcee] max-lg:via-[#fcfcee]/35 max-lg:to-transparent dark:max-lg:from-card dark:max-lg:via-card/35",
-                  imageLeft
-                    ? "lg:bg-gradient-to-l lg:from-[#fcfcee] lg:via-[#fcfcee]/25 lg:to-transparent dark:lg:from-card dark:lg:via-card/25"
-                    : "lg:bg-gradient-to-r lg:from-[#fcfcee] lg:via-[#fcfcee]/25 lg:to-transparent dark:lg:from-card dark:lg:via-card/25",
-                )}
-                aria-hidden
+          {imageSrc && (
+            <div className={cn(
+                "relative min-h-[250px] flex-1 overflow-hidden lg:min-h-0",
+                imageLeft ? "border-b-[6px] lg:border-b-0 lg:border-r-[6px] border-[var(--neo-border)]" : "border-t-[6px] lg:border-t-0 lg:border-l-[6px] border-[var(--neo-border)]"
+            )}>
+              <Image
+                src={imageSrc}
+                alt={imageAlt ?? ""}
+                fill
+                className="object-cover transition-all duration-700"
+                sizes="50vw"
               />
+              <div 
+                className="absolute top-6 right-6 px-4 py-2 font-black text-black text-sm uppercase border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+                style={{ backgroundColor: accentColor }}
+              >
+                Category_{i + 1}
+              </div>
             </div>
           )}
         </div>
@@ -249,64 +191,36 @@ export function MallInfoStackingCards() {
     offset: ["start start", "end end"],
   });
 
-  const { scrollYProgress: fadeProgress } = useScroll({
-    target: container,
-    offset: ["end end", "end start"],
-  });
-
-  const opacity = useTransform(fadeProgress, [0, 0.5], [1, 0]);
-  const scale = useTransform(fadeProgress, [0, 1], [1, 0.95]);
-
   return (
-    <motion.section
-      style={{ opacity, scale }}
-      id="explore"
-      ref={container}
-      className="bg-background relative scroll-mt-24 text-foreground md:scroll-mt-28 origin-top"
-    >
-      <div className="mx-auto flex max-w-7xl flex-col items-start px-4 sm:px-6 lg:flex-row lg:px-8">
-        
-        {/* Sticky Header Column */}
-        <div className="relative top-0 z-10 flex w-full flex-col pt-20 pb-8 lg:sticky lg:h-[100svh] lg:w-1/3 lg:justify-center lg:py-0 lg:pr-10 xl:w-[30%]">
-          <SectionHeading
-            title={
-              <>
-                <span className={sectionTitleLeadWordClass}>Explore</span>{" "}
-                <br className="hidden lg:block" />
-                <span className={cn(sectionTitleAccentWordClass, "font-light italic")}>the Mall</span>
-              </>
-            }
-            subtitle="The Destination"
-            lead="From premium retail to world-class dining and entertainment, uncover everything Kinshasa Mall has to offer under one roof."
-          />
-        </div>
-
-        {/* Cards Column */}
-        <div className="relative w-full lg:w-2/3 xl:w-[70%]">
-
-      {STAT_CARDS.map((row, idx) => {
-        const i = idx ;
-        const imageLeft = i % 2 === 0;
-        return (
-          <StackCard
-            key={row.label}
-            i={i}
-            progress={scrollYProgress}
-            imageSrc={row.imageSrc}
-            imageAlt={row.imageAlt}
-            imageLeft={imageLeft}
-            // Dynamically apply rotation based on index
-            className={cn(
-              i === 1 && "rotate-6",
-              i === 3 && "-rotate-6"
-            )}
-          >
-            <StatCardBody row={row} />
-          </StackCard>
-        );
-      })}
+    <section ref={container} className="relative scroll-mt-24 bg-background pb-32 transition-colors duration-700">
+      <div className="mx-auto flex flex-col items-center justify-center px-4">
+        <div className="relative w-full lg:w-[90%] xl:w-[85%]">
+          {STAT_CARDS.map((row, idx) => (
+            <StackCard
+              key={row.label}
+              i={idx}
+              progress={scrollYProgress}
+              imageSrc={row.imageSrc}
+              imageAlt={row.imageAlt}
+              imageLeft={idx % 2 === 0}
+              accentColor={row.accentColor}
+              className={row.rotation}
+            >
+              <StatCardBody row={row} />
+            </StackCard>
+          ))}
         </div>
       </div>
-    </motion.section>
+    </section>
   );
+}
+
+interface StackCardProps {
+  i: number;
+  progress: MotionValue<number>;
+  children: React.ReactNode;
+  className?: string;
+  imageLeft?: boolean;
+  imageSrc?: string;
+  imageAlt?: string;
 }

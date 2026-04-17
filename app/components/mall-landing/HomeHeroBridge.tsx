@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import ScrollBaseMarquee from "@/components/ui/scroll-text-marque";
+
 export function HeroAmenitiesBridge() {
   const ref = useRef<HTMLElement>(null);
 
@@ -18,7 +19,11 @@ export function HeroAmenitiesBridge() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[100svh] items-center overflow-hidden bg-background px-4"
+      // Trigger attributes for the Deep Teal morph
+      data-scroll-theme-light="theme-deep-teal"
+      data-scroll-theme-dark="theme-deep-teal"
+      // Added transition for the background color change
+      className="relative flex min-h-[100svh] items-center overflow-hidden bg-background px-4 transition-colors duration-700"
     >
       <motion.div
         style={{ y, opacity, scale }}
@@ -30,7 +35,7 @@ export function HeroAmenitiesBridge() {
           clasname="text-foreground text-[clamp(4rem,13vw,14rem)] font-black uppercase leading-[0.82] tracking-[-0.08em]"
         >
           A new way to meet -
-          </ScrollBaseMarquee>
+        </ScrollBaseMarquee>
 
         <ScrollBaseMarquee
           delay={500}
@@ -40,7 +45,6 @@ export function HeroAmenitiesBridge() {
           shop, eat, and stay.
         </ScrollBaseMarquee>
       </motion.div>
-
     </section>
   );
 }

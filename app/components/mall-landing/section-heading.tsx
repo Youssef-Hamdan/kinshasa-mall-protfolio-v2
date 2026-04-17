@@ -44,10 +44,10 @@ export const sectionFooterColumnTitleClass =
 export const sectionFooterBrandTitleClass =
   "text-primary text-lg font-semibold tracking-tight";
 
-/** First word in split titles (“Our”, “Check”, “Explore”) — subtle horizontal gradient on `foreground`. */
+/** First word in split titles (“Our”, “Check”, “Explore”) — `foreground`. */
 export const sectionTitleLeadWordClass = "text-heading-lead";
 
-/** Accent word (“Stores”, “Highlights”, “the Mall”) — teal horizontal gradient; pair with `font-light italic`. */
+/** Accent word (“Stores”, “Highlights”, “the Mall”) — `primary`; pair with `font-light italic`. */
 export const sectionTitleAccentWordClass = "text-heading-accent";
 
 /**
@@ -92,10 +92,10 @@ export function SectionHeading({
       )}
     >
       {eyebrow ? (
-        <TextAnimation as="p" text={eyebrow} letterAnime className={sectionEyebrowClass} />
+        <TextAnimation as="p" text={eyebrow} letterAnime={false} className={sectionEyebrowClass} />
       ) : null}
       {typeof title === "string" ? (
-        <TextAnimation as="h2" text={title} letterAnime className={sectionTitleClass} />
+        <TextAnimation as="h2" text={title} letterAnime={false} className={sectionTitleClass} />
       ) : (
         <BlurRevealTitle className={sectionTitleClass}>{title}</BlurRevealTitle>
       )}
@@ -104,7 +104,7 @@ export function SectionHeading({
           <TextAnimation
             as="p"
             text={String(subtitle)}
-            letterAnime
+            letterAnime={false}
             className={cn(sectionSubtitleClass, centerBlock)}
           />
         ) : (
@@ -116,7 +116,7 @@ export function SectionHeading({
           <TextAnimation
             as="p"
             text={String(lead)}
-            letterAnime
+            letterAnime={false}
             className={cn(sectionLeadClass, centerBlock, leadClassName)}
           />
         ) : (

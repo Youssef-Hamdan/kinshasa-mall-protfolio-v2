@@ -93,6 +93,30 @@ html {
   }
 }
 
+@layer base {
+  :root {
+    /* Semantic Neo-Brutalist Palette */
+    --neo-accent-1: #b2ff05; /* Acid Green */
+    --neo-accent-2: #ffd300; /* Cyber Yellow */
+    --neo-accent-3: #00e5ff; /* Cyan */
+    --neo-accent-4: #ff3e3e; /* Red */
+
+    --neo-border: #000000;
+    --neo-shadow: rgba(0, 0, 0, 1);
+  }
+
+  html.dark {
+    /* Keep high-vis colors vibrant even in dark mode */
+    --neo-accent-1: #b2ff05;
+    --neo-accent-2: #ffd300;
+    --neo-accent-3: #00e5ff;
+    --neo-accent-4: #ff3e3e;
+
+    --neo-border: #ffffff; /* Swaps to white borders for dark mode */
+    --neo-shadow: rgba(255, 255, 255, 0.8);
+  }
+}
+
 /*
  * Kinshasa Mall — teal / ivory / charcoal system.
  * Core theme stays unchanged.
@@ -112,6 +136,11 @@ html {
   --km-primary-soft: rgba(41, 188, 183, 0.16);
   --km-neutral-dark: #333333;
   --km-highlight-line: #3e4444;
+  /* Neo-brutalist category accents → alias semantic --neo-accent-* */
+  --km-spot-lime: var(--neo-accent-1);
+  --km-spot-amber: var(--neo-accent-2);
+  --km-spot-cyan: var(--neo-accent-3);
+  --km-spot-red: var(--neo-accent-4);
 
   --background: var(--km-bg);
   --muted: var(--km-surface);
@@ -162,6 +191,10 @@ html.light {
   --km-text-muted: #787878;
   --km-primary-soft: rgba(15, 114, 110, 0.12);
   --km-neutral-dark: #444444;
+  --km-spot-lime: var(--neo-accent-1);
+  --km-spot-amber: var(--neo-accent-2);
+  --km-spot-cyan: var(--neo-accent-3);
+  --km-spot-red: var(--neo-accent-4);
 
   --background: var(--km-bg);
   --muted: var(--km-surface);
@@ -440,25 +473,17 @@ body {
 }
 
 .text-heading-lead {
-  background-image: linear-gradient(
-    to right,
-    color-mix(in srgb, var(--foreground) 78%, black) 0%,
-    var(--foreground) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  background-image: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--foreground);
 }
 
 .text-heading-accent {
-  background-image: linear-gradient(
-    to right,
-    color-mix(in srgb, var(--primary) 88%, black) 0%,
-    color-mix(in srgb, var(--primary) 35%, white) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  background-image: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  color: var(--primary);
 }
 
 /* Infinite horizontal / vertical marquee */

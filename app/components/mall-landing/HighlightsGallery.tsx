@@ -25,49 +25,36 @@ const HIGHLIGHT_ITEMS = [
   {
     img: IMG.gallery1,
     title: "Dining & cafés",
-    desc: "From quick bites to sit-down meals, find flavors that fit every craving in one destination.",
+    desc: "From quick bites to sit-down meals, find flavors that fit every craving.",
     sliderName: "cfc",
+    color: "bg-[var(--km-spot-red)]",
   },
   {
     img: IMG.gallery2,
     title: "Smokehouse & grill",
-    desc: "Bold grills and smoky aromas — a go-to spot when you want something hearty and satisfying.",
+    desc: "Bold grills and smoky aromas — heart and satisfying.",
     sliderName: "smokin",
+    color: "bg-[var(--km-spot-amber)]",
   },
   {
     img: IMG.gallery3,
     title: "Sweet treats",
-    desc: "Cool off with ice cream and desserts perfect for families and a sunny day at the mall.",
+    desc: "Cool off with ice cream and desserts perfect for families.",
     sliderName: "nice-cream",
+    color: "bg-[var(--km-spot-cyan)]",
   },
   {
     img: IMG.building,
     title: "Shopping & strolls",
-    desc: "Browse stores, meet friends, and enjoy a bright, welcoming place to spend the day.",
+    desc: "Browse stores, meet friends, and enjoy a welcoming place.",
     sliderName: "mall",
+    color: "bg-[var(--km-spot-lime)]",
   },
 ] as const;
 
-/** Base height before scroll expansion (matches previous fixed card). */
-const HIGHLIGHT_CARD_HEIGHT_PX = 500;
-
-/**
- * Total scroll span for this block (taller = more pixels of scroll).
- * Progress phases (scrollYProgress 0→1 through this section):
- * - [0, EXPAND_END): grow compact → fullscreen
- * - [EXPAND_END, HOLD_END): stay fullscreen
- * - [HOLD_END, 1]: shrink back to compact (leaving the section)
- */
-const SCROLL_TRACK_MIN_HEIGHT = "360vh";
-
-/** When `scrollYProgress` reaches this, expansion is complete (t = 1). */
-const EXPAND_END = 0.36;
-
-/** After this, the card shrinks toward compact as you scroll out (bottom exit). */
-const HOLD_END = 0.58;
-
+// Neo-Brutalist Shell: Thick borders, sharp corners, and a hard shadow
 const cardShellClassName =
-  "border-border bg-[#fcfcee] text-card-foreground shadow-xl dark:bg-card relative mx-auto overflow-hidden border dark:shadow-none";
+  "border-[4px] border-border relative mx-auto overflow-hidden bg-background text-foreground shadow-[16px_16px_0px_0px_var(--foreground)]";
 
 export function HighlightsGallery() {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -83,51 +70,30 @@ export function HighlightsGallery() {
     offset: ["start start", "end end"],
   });
 
-  const t = useTransform(scrollYProgress, (v) => {
-    if (reduceMotion === true) return 0;
-    const vv = Math.min(1, Math.max(0, v));
-    if (vv <= EXPAND_END) {
-      return EXPAND_END > 0 ? vv / EXPAND_END : 0;
-    }
-    if (vv <= HOLD_END) {
-      return 1;
-    }
-    const shrinkSpan = 1 - HOLD_END;
-    if (shrinkSpan <= 0) return 0;
-    return 1 - (vv - HOLD_END) / shrinkSpan;
-  });
-
-  const heightPx = useTransform(t, (p) => {
-    if (typeof window === "undefined") return HIGHLIGHT_CARD_HEIGHT_PX;
-    const vh = window.innerHeight;
-    return HIGHLIGHT_CARD_HEIGHT_PX + p * (vh - HIGHLIGHT_CARD_HEIGHT_PX);
-  });
-
+  // Shrink the motion range for a snappier "pop-in" effect rather than a long glide
+  const t = useTransform(scrollYProgress, [0, 0.25], [0, 1]);
+  
   const widthPx = useTransform(t, (p) => {
     if (typeof window === "undefined") return 1200;
     const vw = window.innerWidth;
-    const sidePad = 16;
-    const wCompact = Math.min(100 * 16, vw - 2 * sidePad);
+    const sidePad = 24;
+    const wCompact = Math.min(1100, vw - 2 * sidePad);
+    /* End state: full viewport width (edge-to-edge highlight) */
     return wCompact + p * (vw - wCompact);
   });
-
-  const borderRadiusPx = useTransform(t, (p) => 24 * (1 - p));
 
   return (
     <section
       id="highlights"
-      data-scroll-theme-light="theme-deep-teal"
-      data-scroll-theme-dark="theme-deep-teal"
-      className="scroll-mt-24 overflow-x-clip pb-10 sm:pb-24 md:scroll-mt-28"
+      className="scroll-mt-24 overflow-x-clip bg-background"
     >
-      <div className={cn(sectionHeaderContainerClass, "pt-16")}>
+      <div className={cn(sectionHeaderContainerClass, "pt-16 pb-12")}>
         <SectionHeading
           title={
-            <>
-              <span className={sectionTitleLeadWordClass}>Check</span>{" "}
-              <br className="hidden lg:block" />
-              <span className={cn(sectionTitleAccentWordClass, "font-light italic")}>Highlights</span>
-            </>
+            <div className="flex flex-col">
+              <span className={cn(sectionTitleLeadWordClass, "font-black uppercase")}>Check</span>
+              <span className={cn(sectionTitleAccentWordClass, "text-primary italic -mt-4")}>Highlights</span>
+            </div>
           }
         />
       </div>
@@ -135,25 +101,22 @@ export function HighlightsGallery() {
       <div
         ref={scrollRef}
         className="relative w-full"
-        style={{ minHeight: reduceMotion === true ? undefined : SCROLL_TRACK_MIN_HEIGHT }}
+        style={{ minHeight: "200vh" }}
       >
-        <div className="sticky top-0 flex h-[100dvh] min-h-[500px] w-full items-center justify-center px-0">
+        <div className="sticky top-24 z-0 flex h-[calc(100dvh-6rem)] min-h-[calc(100dvh-6rem)] w-full max-w-[100vw] items-center justify-center px-0">
           {hasMounted ? (
             <motion.div
               className={cardShellClassName}
               style={{
-                height: heightPx,
                 width: widthPx,
-                borderRadius: borderRadiusPx,
+                height: "100%",
                 maxWidth: "100%",
               }}
             >
               <HighlightsCarouselInner />
             </motion.div>
           ) : (
-            <div
-              className={`${cardShellClassName} h-[500px] w-full max-w-[100rem] rounded-2xl md:rounded-3xl`}
-            >
+            <div className={cn(cardShellClassName, "h-full w-full max-w-6xl")}>
               <HighlightsCarouselInner />
             </div>
           )}
@@ -163,7 +126,6 @@ export function HighlightsGallery() {
   );
 }
 
-/** Inner carousel only — used inside motion wrapper with inherited border-radius. */
 function HighlightsCarouselInner() {
   const isSmUp = useMediaQuery("(min-width: 640px)");
 
@@ -175,38 +137,51 @@ function HighlightsCarouselInner() {
       activeSlider={HIGHLIGHT_ITEMS[0].sliderName}
       className="flex h-full min-h-0 flex-col-reverse sm:flex-row"
     >
-      <SliderBtnGroup className="border-border/50 z-10 grid h-fit w-full grid-cols-2 overflow-hidden border-t sm:flex sm:h-full sm:w-96 sm:shrink-0 sm:flex-col sm:border-t-0 sm:border-r sm:bg-white/55 dark:sm:bg-muted/40">
+      <SliderBtnGroup className="z-10 grid h-fit w-full grid-cols-2 overflow-hidden sm:flex sm:h-full sm:w-[380px] sm:shrink-0 sm:flex-col sm:bg-card">
         {HIGHLIGHT_ITEMS.map((item) => (
           <SliderBtn
             key={item.sliderName}
             value={item.sliderName}
-            className="border-border/50 hover:bg-primary/5 border p-3 pb-6 text-left transition-colors sm:flex-1 sm:border-b sm:pb-0 sm:pl-5 sm:pt-0"
-            progressBarClass="bg-primary bottom-0 left-0 h-4 before:h-full before:w-4 sm:top-0 sm:h-full sm:w-3"
+            className={cn(
+              "group relative border-border p-4 text-left transition-all sm:flex-1 sm:border-b-4 last:border-b-0",
+              "hover:bg-background/5 aria-selected:bg-background"
+            )}
+            progressBarClass={cn(
+              "absolute bottom-0 left-0 h-2 sm:top-0 sm:left-0 sm:h-full sm:w-4 border-r-2 border-border",
+              item.color
+            )}
           >
-            <TextAnimation
-              as="h3"
-              text={item.title}
-              letterAnime
-              className="bg-primary text-primary-foreground mb-2 w-fit rounded-md px-3 py-1 text-sm font-semibold"
-            />
-            <p className="text-muted-foreground line-clamp-2 text-sm font-medium">
-              {item.desc}
-            </p>
+            <div className="relative z-10 pl-2 sm:pl-6">
+              <h3 className={cn(
+                "mb-2 w-fit border-2 border-border px-3 py-1 text-sm font-black uppercase tracking-tighter shadow-[3px_3px_0px_0px_var(--foreground)]",
+                item.color
+              )}>
+                {item.title}
+              </h3>
+              <p className="text-muted-foreground font-bold line-clamp-2 text-xs md:text-sm leading-tight">
+                {item.desc}
+              </p>
+            </div>
           </SliderBtn>
         ))}
       </SliderBtnGroup>
-      <SliderContent className="relative min-h-0 w-full flex-1 sm:h-full sm:min-w-0">
+
+      <SliderContent className="relative min-h-0 w-full flex-1 sm:h-full sm:min-w-0 border-l-4 border-border">
         {HIGHLIGHT_ITEMS.map((item) => (
-          <SliderWrapper key={item.sliderName} value={item.sliderName} className="absolute inset-0 h-full sm:relative sm:inset-auto">
-            <div className="relative h-full w-full">
+          <SliderWrapper key={item.sliderName} value={item.sliderName} className="absolute inset-0 h-full">
+            <div className="relative h-full w-full transition-all duration-500">
               <Image
                 src={item.img}
                 alt={item.title}
                 fill
                 className="object-cover"
-                sizes="(max-width: 640px) 100vw, calc(100vw - 24rem)"
+                sizes="(max-width: 640px) 100vw, 60vw"
                 priority={item.sliderName === HIGHLIGHT_ITEMS[0].sliderName}
               />
+              {/* Corner accent for Y2K feel */}
+              <div className="absolute top-4 right-4 bg-background text-primary px-3 py-1 text-[10px] font-black uppercase tracking-widest">
+                HD_DATA_REF_{item.sliderName.toUpperCase()}
+              </div>
             </div>
           </SliderWrapper>
         ))}

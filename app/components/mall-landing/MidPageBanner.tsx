@@ -23,7 +23,7 @@ export function MidPageBanner() {
           <TextAnimation
             as="h2"
             text="Welcome to the heart of the city"
-            letterAnime
+            letterAnime={false}
             className={cn(sectionTitleCompactClass, "text-photo-text")}
           />
           <TextAnimation

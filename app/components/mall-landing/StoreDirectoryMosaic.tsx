@@ -66,7 +66,7 @@ export function StoreDirectoryMosaic() {
                 <TextAnimation
                   as="h3"
                   text={row.label}
-                  letterAnime
+                  letterAnime={false}
                   className={cn(storeBandHeadingClass, "text-left")}
                 />
               </div>

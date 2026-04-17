@@ -42,20 +42,10 @@ type BlurRevealTitleProps = {
   children: ReactNode;
 };
 
-/** Blur-in heading that supports rich children (lines, spans, live numbers). */
+/** Section heading that supports rich children (lines, spans, live numbers). */
 export function BlurRevealTitle({ as = "h2", className, children }: BlurRevealTitleProps) {
-  const reduce = useReducedMotion();
   const M = motionTags[as] ?? motion.h2;
-  return (
-    <M
-      initial={reduce ? false : { opacity: 0, y: 14, filter: "blur(14px)" }}
-      animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className={className}
-    >
-      {children}
-    </M>
-  );
+  return <M className={className}>{children}</M>;
 }
 
 type TextAnimationProps = {
